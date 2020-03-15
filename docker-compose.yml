@@ -1,0 +1,11 @@
+version: "3"
+services:
+  http_server:
+      build: .
+      ports: 
+        - "7878:7878"
+      volumes:
+        - ./:/usr/src/project
+      environment:
+          - RUST_BACKTRACE=full
+      #   - CARGO_INCREMENTAL=1
