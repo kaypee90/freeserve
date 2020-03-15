@@ -7,9 +7,15 @@ mod lib;
 
 use crate::lib::threadpool;
 
+static IPADDRESS: &str = "0.0.0.0";
+static PORT: &str = "7878";
+
 fn main() { 
-    let listener = TcpListener::bind("0.0.0.0:7878").unwrap();
-    let pool = threadpool::ThreadPool::new(4);
+    let listener = TcpListener::bind(format!("{}:{}", IPADDRESS, PORT)).unwrap();
+    let pool = match threadpool::ThreadPool::new(4) {
+        Ok(pool) => pool,
+        Err(_) => panic!("Error while trying to create threadpool"),    
+    };
 
     for stream in listener.incoming(){
         let stream = stream.unwrap();
