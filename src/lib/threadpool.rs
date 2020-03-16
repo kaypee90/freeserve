@@ -10,10 +10,14 @@ pub struct ThreadPool {
 
 type Job = Box<dyn FnOnce() + Send + 'static>;
 
+pub struct PoolCreationError;
+
 impl ThreadPool {
-    // TODO: switch to Result<ThreadPool, PoolCreationError> {
-    pub fn new(size: usize) -> ThreadPool {
-        assert!(size > 0);
+    pub fn new(size: usize) -> Result<ThreadPool, PoolCreationError> {
+        if size <= 0 {
+            eprintln!("Invalid pool size provided!");
+            return Err(PoolCreationError);
+        }
 
         let (sender, receiver) = mpsc::channel();
 
@@ -25,10 +29,12 @@ impl ThreadPool {
             workers.push(Worker::new(id, Arc::clone(&receiver)));
         }
 
-        ThreadPool {
+        let obj_thread_pool = ThreadPool {
             workers,
             sender,
-        }
+        };
+        
+        return Ok(obj_thread_pool);
     }
 
     pub fn execute<F>(&self, f: F)
