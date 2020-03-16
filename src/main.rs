@@ -7,15 +7,27 @@ mod lib;
 
 use crate::lib::threadpool;
 
+use log::{ info, trace, warn };
+use simple_logger;
+
 static IPADDRESS: &str = "0.0.0.0";
 static PORT: &str = "7878";
 
 fn main() { 
-    let listener = TcpListener::bind(format!("{}:{}", IPADDRESS, PORT)).unwrap();
+    simple_logger::init().unwrap();
+
+    let socket = format!("{}:{}", IPADDRESS, PORT);
+
+    let listener = TcpListener::bind(&socket).unwrap();
     let pool = match threadpool::ThreadPool::new(4) {
         Ok(pool) => pool,
-        Err(_) => panic!("Error while trying to create threadpool"),    
+        Err(_) => {
+            warn!("Creating threadpool failed this might cause server to stop serving");
+            panic!("Error while trying to create threadpool");
+        }   
     };
+
+    info!("Server running on {}!", socket);
 
     for stream in listener.incoming(){
         let stream = stream.unwrap();
