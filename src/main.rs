@@ -1,3 +1,5 @@
+// Ref: https://doc.rust-lang.org/book/ch20-02-multithreaded.html
+
 use std::fs;
 use std::io::prelude::*;
 use std::net::TcpStream;
