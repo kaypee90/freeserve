@@ -14,6 +14,7 @@ use simple_logger;
 
 static IPADDRESS: &str = "0.0.0.0";
 static PORT: &str = "7878";
+const HTTP_VERSION: &str = "HTTP/1.1\r\n";
 
 fn main() { 
     simple_logger::init().unwrap();
@@ -44,14 +45,8 @@ fn main() {
 fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     stream.read(&mut buffer).unwrap();
-    
-    let get = b"GET / HTTP/1.1\r\n";
 
-    let (status_line, filename) = if buffer.starts_with(get) {
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else {
-        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
-    };
+    let  (mut status_line, mut filename) = get_route(&mut buffer);
 
     let fullpath = format!("/usr/src/project/{}", filename); 
     let contents = fs::read_to_string(fullpath).unwrap();
@@ -60,4 +55,27 @@ fn handle_connection(mut stream: TcpStream) {
 
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
+}
+
+fn get_route(buffer: &mut [u8]) -> (&str, &str) {
+    let status_200_ok = "HTTP/1.1 200 OK\r\n\r\n";
+    let status_404_not_found = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
+
+    let routes = [
+        vec!["GET", "/", "hello.html"],
+        vec!["GET", "/about", "about.html"],
+    ];
+
+    let (mut status_line, mut filename) = (status_404_not_found, "404.html");
+
+    for route in &routes {
+        let get = format!("{} {} {}", route[0], route[1], HTTP_VERSION);
+        if buffer.starts_with(get.as_bytes()) {
+            status_line = "HTTP/1.1 200 OK\r\n\r\n";
+            filename = route[2];
+            break;
+        }
+    }
+
+    return (status_line, filename);
 }
