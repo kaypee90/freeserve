@@ -8,12 +8,14 @@ use std::net::TcpListener;
 mod lib;
 
 use crate::lib::threadpool;
+use crate::lib::router;
 
 use log::{ info, trace, warn };
 use simple_logger;
 
 static IPADDRESS: &str = "0.0.0.0";
 static PORT: &str = "7878";
+const BASE_PATH: &str = "/usr/src/project/";
 
 fn main() { 
     simple_logger::init().unwrap();
@@ -44,16 +46,10 @@ fn main() {
 fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     stream.read(&mut buffer).unwrap();
-    
-    let get = b"GET / HTTP/1.1\r\n";
 
-    let (status_line, filename) = if buffer.starts_with(get) {
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else {
-        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
-    };
+    let  (status_line, filename) = router::Router::get_route(&mut buffer);
 
-    let fullpath = format!("/usr/src/project/{}", filename); 
+    let fullpath = format!("{}{}", BASE_PATH, filename); 
     let contents = fs::read_to_string(fullpath).unwrap();
 
     let response = format!("{}{}", status_line, contents);
@@ -61,3 +57,4 @@ fn handle_connection(mut stream: TcpStream) {
     stream.write(response.as_bytes()).unwrap();
     stream.flush().unwrap();
 }
+
