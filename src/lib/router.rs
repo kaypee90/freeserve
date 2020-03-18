@@ -18,10 +18,10 @@ impl Router {
         // *** ----------------------- ***
 
         const HTTP_VERSION: &str = "HTTP/1.1\r\n";
-        static _status_200_ok: &str = "HTTP/1.1 200 OK\r\n\r\n";
-        static _status_404_not_found: &str = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
+        static _STATUS_200_OK: &str = "HTTP/1.1 200 OK\r\n\r\n";
+        static _STATUS_404_NOT_FOUND: &str = "HTTP/1.1 404 NOT FOUND\r\n\r\n";
     
-        let (mut status_line, mut body) = (_status_404_not_found, "404.html");
+        let (mut status_line, mut body) = (_STATUS_404_NOT_FOUND, "404.html");
     
         for route in &routes {
             let http_method = route[0];
@@ -31,7 +31,7 @@ impl Router {
             let get = format!("{} {} {}", http_method, http_uri, HTTP_VERSION);
 
             if buffer.starts_with(get.as_bytes()) {
-                status_line = _status_200_ok;
+                status_line = _STATUS_200_OK;
                 body = http_resource;
                 info!("{} {} {}.", http_method, http_uri, status_line);
                 break;
