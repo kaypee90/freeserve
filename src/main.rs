@@ -16,6 +16,7 @@ use simple_logger;
 static IPADDRESS: &str = "0.0.0.0";
 static PORT: &str = "7878";
 const BASE_PATH: &str = "/usr/src/project/";
+const DEFAULT_TEMPLATE_PATH: &str = "src/templates/";
 
 fn main() { 
     simple_logger::init().unwrap();
@@ -49,7 +50,9 @@ fn handle_connection(mut stream: TcpStream) {
 
     let  (status_line, filename) = router::Router::get_route(&mut buffer);
 
-    let fullpath = format!("{}{}", BASE_PATH, filename); 
+    let fullpath = format!("{}{}{}", BASE_PATH, DEFAULT_TEMPLATE_PATH, filename); 
+    info!("Fetching file from: {}", fullpath);
+
     let contents = fs::read_to_string(fullpath).unwrap();
 
     let response = format!("{}{}", status_line, contents);
