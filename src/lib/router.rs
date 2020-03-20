@@ -8,7 +8,7 @@ pub struct Router {
 }
 
 impl Router {
-    pub fn get_route(buffer: &mut [u8]) -> (&str, &str) {
+    pub fn get_route(buffer: &mut [u8]) -> (String, &str) {
 
         // **** Add your routes here ****
 
@@ -21,12 +21,12 @@ impl Router {
 
         let http_version: &str = httpcode::HttpCode::http_version();
         let status_400_not_found: &str = httpcode::HttpCode::status_404_not_found();
-        let (mut status_line, mut body) = (status_400_not_found, "404.html");
+        let (mut body, mut status_line) = (String::from("404.html"), status_400_not_found);
     
         for route in &routes {
             let http_method = route[0];
             let http_uri = route[1];
-            let route_identifier = route[2]
+            let route_identifier = route[2];
            
             let get = format!("{} {} {}", http_method, http_uri, http_version);
 
@@ -39,7 +39,7 @@ impl Router {
             }
         }
     
-        return (status_line, body);
+        return (body, status_line);
     }
     
 }
