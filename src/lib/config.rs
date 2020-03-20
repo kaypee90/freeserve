@@ -1,5 +1,5 @@
 pub struct Config {
-    use_api_view: bool,
+   pub use_api_view: bool,
 }
 
 impl Config {
@@ -9,9 +9,5 @@ impl Config {
         };
 
         return app_config;
-    }
-
-    pub fn is_api_view(&self) -> bool {
-        return self.use_api_view;
     }
 }

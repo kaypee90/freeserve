@@ -1,8 +1,7 @@
 FROM rust:1.40 as builder
 WORKDIR /usr/src/project
 COPY . .
-RUN cargo install --path . && cargo build --release && \
-    cargo check && cargo test
+RUN cargo install --path . && cargo check && cargo test
 
 FROM debian:buster-slim
 RUN apt-get update

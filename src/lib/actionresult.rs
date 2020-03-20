@@ -16,7 +16,7 @@ impl ActionResult{
         let app_config = config::Config::new();
         let fullpath = format!("{}{}{}", BASE_PATH, DEFAULT_TEMPLATE_PATH, resource); 
 
-        if app_config.is_api_view() == false {  
+        if app_config.use_api_view == false {  
             info!("Fetching file from: {}", fullpath);         
             content =  fs::read_to_string(fullpath).unwrap();                       
         }
