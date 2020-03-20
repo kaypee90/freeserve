@@ -10,7 +10,7 @@ mod lib;
 use crate::lib::threadpool;
 use crate::lib::router;
 
-use log::{ info, trace, warn };
+use log::{ info, trace };
 use simple_logger;
 
 static IPADDRESS: &str = "0.0.0.0";
@@ -27,7 +27,7 @@ fn main() {
     let pool = match threadpool::ThreadPool::new(4) {
         Ok(pool) => pool,
         Err(_) => {
-            warn!("Creating threadpool failed this might cause server to stop serving");
+            trace!("Creating threadpool failed this might cause server to stop serving");
             panic!("Error while trying to create threadpool");
         }   
     };

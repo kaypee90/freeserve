@@ -1,5 +1,7 @@
 pub mod threadpool;
 pub mod router;
+pub mod handler;
+pub mod httpcode;
 
 
 // use crate::lib::threadpool as other_threadpool;
