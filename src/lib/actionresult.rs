@@ -11,7 +11,7 @@ pub struct ActionResult {
 
 impl ActionResult{
 
-    pub fn view<'a> (resource: &'a str, status_code: &'a str) -> (String, &'a str){
+    pub fn view<'a> (resource: String, status_code: &'a str) -> (String, &'a str){
         let mut content = resource.to_string();
         let app_config = config::Config::new();
         let fullpath = format!("{}{}{}", BASE_PATH, DEFAULT_TEMPLATE_PATH, resource); 
