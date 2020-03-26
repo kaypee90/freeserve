@@ -44,7 +44,7 @@ fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     stream.read(&mut buffer).unwrap();
 
-    let  (contents, status_line) = router::Router::get_route(&mut buffer);
+    let (contents, status_line) = router::Router::get_route(&mut buffer);
     let response = format!("{}{}", status_line, &contents);
 
     stream.write(response.as_bytes()).unwrap();
