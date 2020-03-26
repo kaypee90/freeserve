@@ -31,7 +31,6 @@ impl Router {
 
         let vec: Vec<&str> = iter_request.collect();
         let number_of_params = vec.len();
-        println!("Number of Splits: {}", number_of_params);
 
         let mut body = String::new(); // post body
         let mut params = String::new(); // query parameters
@@ -42,7 +41,6 @@ impl Router {
         let mut counter = 0;
         for item in &vec {
             if !item.contains(":") && counter > 1{
-                println!("{}", item);
                 break;
             }
             counter = counter + 1;
@@ -72,9 +70,6 @@ impl Router {
     
         for route in &routes {
             let route_identifier = route[2];
-           
-            //let get = format!("{} {} {}", http_method, http_uri, http_version);
-
             if route[0].to_string() == http_method && route[1].to_string() == http_uri {
                 let (http_resource, status_code) = handler::Handler::execute(body, params, route_identifier);
                 status_line = status_code;
@@ -82,6 +77,7 @@ impl Router {
                 info!("{} {} {}.", http_method, http_uri, status_line);
                 break;
             } else {
+                info!("No routes found!");
                 body = String::new();
             }
         }
