@@ -25,5 +25,7 @@ fn post_hello(body: String, params: String) -> (String, &'static str, ) {
 
 
 fn get_about(body: String, params: String) -> (String, &'static str, ){
+
+    println!("Query Parameters: {}", params);
     return actionresult::ActionResult::view("about.html".to_string(), httpcode::HttpCode::status_200_ok());
 }
