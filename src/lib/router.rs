@@ -53,7 +53,18 @@ impl Router {
         
         http_method = vec_http_info[0].to_string();
         if vec_http_info.len() > 1{
-            http_uri = vec_http_info[1].to_string();
+            let uri = vec_http_info[1].to_string();
+            let query_parameters = uri.split("?");
+            let query_string: Vec<&str> = query_parameters.collect();
+            
+            if query_string.len() > 1 // If request has valid request query strings
+            {
+                http_uri = query_string[0].to_string();
+                params = query_string[1].to_string();
+            }
+            else{
+                http_uri = vec_http_info[1].to_string();
+            }
         }
         
 
@@ -77,7 +88,7 @@ impl Router {
                 info!("{} {} {}.", http_method, http_uri, status_line);
                 break;
             } else {
-                info!("No routes found!");
+                info!("No matching route found!");
                 body = String::new();
             }
         }
