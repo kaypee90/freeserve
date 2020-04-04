@@ -5,8 +5,8 @@ use std::net::TcpListener;
 
 mod lib;
 
-use crate::lib::threadpool;
-use crate::lib::router;
+use crate::lib::threadpool::ThreadPool;
+use crate::lib::router::Router;
 
 use log::{ info, trace };
 use simple_logger;
@@ -20,7 +20,7 @@ fn main() {
     let socket = format!("{}:{}", IPADDRESS, PORT);
 
     let listener = TcpListener::bind(&socket).unwrap();
-    let pool = match threadpool::ThreadPool::new(4) {
+    let pool = match ThreadPool::new(4) {
         Ok(pool) => pool,
         Err(_) => {
             trace!("Creating threadpool failed this might cause server to stop serving");
@@ -44,7 +44,7 @@ fn handle_connection(mut stream: TcpStream) {
     let mut buffer = [0; 512];
     stream.read(&mut buffer).unwrap();
 
-    let (contents, status_line) = router::Router::get_route(&mut buffer);
+    let (contents, status_line) = Router::get_route(&mut buffer);
     let response = format!("{}{}", status_line, &contents);
 
     stream.write(response.as_bytes()).unwrap();

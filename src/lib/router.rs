@@ -1,7 +1,7 @@
 use log::{ info };
 
-use crate::lib::handler;
-use crate::lib::httpcode;
+use crate::lib::handler::Handler;
+use crate::lib::httpcode::HttpCode;
 
 pub struct Router {
     
@@ -19,8 +19,8 @@ impl Router {
 
         // *** ----------------------- ***
 
-        let http_version: &str = httpcode::HttpCode::http_version();
-        let status_400_not_found: &str = httpcode::HttpCode::status_404_not_found();
+        let http_version: &str = HttpCode::http_version();
+        let status_400_not_found: &str = HttpCode::status_404_not_found();
         let (mut body, mut status_line) = (String::from("404.html"), status_400_not_found);
 
         let request_body = String::from_utf8_lossy(&buffer[..]);
@@ -82,7 +82,7 @@ impl Router {
         for route in &routes {
             let route_identifier = route[2];
             if route[0].to_string() == http_method && route[1].to_string() == http_uri {
-                let (http_resource, status_code) = handler::Handler::execute(body, params, route_identifier);
+                let (http_resource, status_code) = Handler::execute(body, params, route_identifier);
                 status_line = status_code;
                 body = http_resource;
                 info!("{} {} {}.", http_method, http_uri, status_line);
