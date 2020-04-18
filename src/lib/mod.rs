@@ -48,23 +48,23 @@ mod tests {
         assert_eq!(status_404_not_found, "HTTP/1.1 404 NOT FOUND\r\n\r\n");
     }
 
-    #[test]
-    fn test_get_hello_handler(){
-        let body = String::from("{}");
-        let params= String::from("?say=hello");
-        let expected_response = actionresult::ActionResult::view("hello.html".to_string(), httpcode::HttpCode::status_200_ok());
-        let actual_response = handler::Handler::execute(body, params, "hello");
-        assert_eq!(expected_response, actual_response);
-    }
+    // #[test]
+    // fn test_get_hello_handler(){
+    //     let body = String::from("{}");
+    //     let params= String::from("?say=hello");
+    //     let expected_response = actionresult::ActionResult::view("hello.html".to_string(), httpcode::HttpCode::status_200_ok());
+    //     let actual_response = handler::Handler::execute(body, params, "hello");
+    //     assert_eq!(expected_response, actual_response);
+    // }
 
-    #[test]
-    fn test_get_about_handler(){
-        let body = String::from("{}");
-        let params= String::from("?say=abput");
-        let expected_response = actionresult::ActionResult::view("about.html".to_string(), httpcode::HttpCode::status_200_ok());
-        let actual_response = handler::Handler::execute(body, params, "about");
-        assert_eq!(expected_response, actual_response);
-    }
+    // #[test]
+    // fn test_get_about_handler(){
+    //     let body = String::from("{}");
+    //     let params= String::from("?say=abput");
+    //     let expected_response = actionresult::ActionResult::view("about.html".to_string(), httpcode::HttpCode::status_200_ok());
+    //     let actual_response = handler::Handler::execute(body, params, "about");
+    //     assert_eq!(expected_response, actual_response);
+    // }
 
     #[test]
     fn test_invalid_handler(){

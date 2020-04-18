@@ -5,7 +5,7 @@ pub struct Config {
 impl Config {
     pub fn new() -> Config {
         let app_config = Config {
-            use_api_view : false,
+            use_api_view : true,
         };
 
         return app_config;
