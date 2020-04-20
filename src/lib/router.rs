@@ -2,13 +2,15 @@ use log::{ info };
 
 use crate::lib::handler::Handler;
 use crate::lib::httpcode::HttpCode;
+use crate::lib::config::Response;
+use crate::lib::config::ContentType;
 
 pub struct Router {
     
 }
 
 impl Router {
-    pub fn get_route(buffer: &mut [u8]) -> (String, &str) {
+    pub fn get_route(buffer: &mut [u8]) -> Vec<u8> {
 
         // **** Add your routes here ****
 
@@ -22,6 +24,7 @@ impl Router {
         let http_version: &str = HttpCode::http_version();
         let status_400_not_found: &str = HttpCode::status_404_not_found();
         let (mut body, mut status_line) = (String::from("404.html"), status_400_not_found);
+        let mut int_status_code: u16 = 404;
 
         let request_body = String::from_utf8_lossy(&buffer[..]);
         let iter_request = request_body.split("\n");
@@ -85,6 +88,7 @@ impl Router {
                 let (http_resource, status_code) = Handler::execute(body, params, route_identifier);
                 status_line = status_code;
                 body = http_resource;
+                int_status_code = 200;
                 info!("{} {} {}.", http_method, http_uri, status_line);
                 break;
             } else {
@@ -93,7 +97,39 @@ impl Router {
             }
         }
     
-        return (body, status_line);
+        return build_response(int_status_code, http_method, body);
     }
-    
+}
+
+fn build_response(int_status_code: u16, http_method: String, response_body: String) -> Vec<u8>{
+    let mut result = format!(
+        "HTTP/1.0 {} \n",
+        int_status_code.to_string(),
+    );
+
+    result = format!("{}Allow: {}\n", result, http_method);
+
+    let mut response = Response::new();
+    response.status = int_status_code;
+    response.headers.content_type = Some(ContentType::from_app_config());
+
+    match response.headers.content_type {
+        Some(content_type) => {
+            result = format!(
+                "{}Content-type: {}\n", result, content_type.value());
+        },
+        _ => (),
+    }
+
+    let mut bytes = result.as_bytes().to_vec();
+
+    match response_body {
+        body => {
+            bytes.append(&mut "\n".as_bytes().to_vec());
+            bytes.append(&mut body.as_bytes().to_vec());
+        },
+        _ => (),
+    }
+
+    bytes
 }

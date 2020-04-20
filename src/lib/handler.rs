@@ -20,12 +20,14 @@ impl Handler{
 
 fn post_hello(body: String, params: String) -> (String, &'static str, ) {
 
-    return ActionResult::view("hello.html".to_string(), HttpCode::status_200_ok());
+    // return ActionResult::view("hello.html".to_string(), HttpCode::status_200_ok());
+    return ActionResult::view("{\"message\":\"Hello World\"}".to_string(), HttpCode::status_200_ok());
 }
 
 
 fn get_about(body: String, params: String) -> (String, &'static str, ){
 
     println!("Query Parameters: {}", params);
-    return ActionResult::view("about.html".to_string(), HttpCode::status_200_ok());
+    //return ActionResult::view("about.html".to_string(), HttpCode::status_200_ok());
+    return ActionResult::view("{\"message\":\"About Free serve\"}".to_string(), HttpCode::status_200_ok());
 }
